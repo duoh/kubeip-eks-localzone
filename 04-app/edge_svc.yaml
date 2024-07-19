@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-deployment
+  name: edge-deployment
   labels:
-    app: nginx
+    app: edge
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nginx
+      app: edge
   template:
     metadata:
       labels:
-        app: nginx
+        app: edge
     spec:
       containers:
-      - name: nginx-edgesvc
+      - name: edge-svc
         image: nginx
         ports:
         - containerPort: 80
@@ -76,7 +76,7 @@ data:
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-service-nodeport
+  name: edge-service
 spec:
   type: NodePort
   selector:

@@ -2,18 +2,6 @@ provider "aws" {
   region = var.region
 }
 
-resource "aws_eip" "kubeip" {
-  count = 1
-
-  tags = {
-    Name        = "kubeip-${count.index}"
-    environment = "demo"
-    kubeip      = "reserved"
-  }
-
-  network_border_group = "ap-southeast-1-bkk-1"
-}
-
 data "aws_eks_cluster" "kubeip_lz_cluster" {
   name = var.cluster_name
 }
@@ -26,6 +14,18 @@ provider "kubernetes" {
   host                   = data.aws_eks_cluster.kubeip_lz_cluster.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.kubeip_lz_cluster.certificate_authority[0].data)
   token                  = data.aws_eks_cluster_auth.kubeip_lz_cluster_auth.token
+}
+
+resource "aws_eip" "kubeip" {
+  count = 1
+
+  tags = {
+    Name        = "kubeip-${count.index}"
+    environment = "demo"
+    kubeip      = "reserved"
+  }
+
+  network_border_group = var.network_border_group
 }
 
 resource "kubernetes_service_account" "kubeip_service_account" {
@@ -125,7 +125,7 @@ resource "kubernetes_daemonset" "kubeip_daemonset" {
           }
           env {
             name  = "LOG_LEVEL"
-            value = "debug"
+            value = "info"
           }
           resources {
             requests = {

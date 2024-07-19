@@ -2,20 +2,6 @@ provider "aws" {
   region = var.region
 }
 
-resource "aws_security_group" "allow_edge_svc" {
-  name        = "allow_edge_svc"
-  description = "Allow TCP port 3000 for service exposed via nodeport"
-  vpc_id      = var.vpc_id
-}
-
-resource "aws_vpc_security_group_ingress_rule" "allow_tls_ipv4" {
-  security_group_id = aws_security_group.allow_edge_svc.id
-  cidr_ipv4         = "0.0.0.0/0"
-  from_port         = 30000
-  ip_protocol       = "tcp"
-  to_port           = 30000
-}
-
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
 
@@ -35,10 +21,6 @@ module "eks" {
     vpc-cni                = {}
   }
 
-  eks_managed_node_group_defaults = {
-    ami_type = "AL2023_x86_64_STANDARD"
-  }
-
   eks_managed_node_groups = {
     region-ng = {
       ami_type      = "AL2023_x86_64_STANDARD"
@@ -46,26 +28,25 @@ module "eks" {
       min_size      = 1
       subnet_ids    = var.private_subnets
 
-      bootstrap_extra_args = "--kubelet-extra-args '--node-labels=,kubeip=use'"
+      labels = {
+        region  = "true"
+      }
 
       tags = {
         Name        = "private-node-group"
         environment = "demo"
         public      = "false"
       }
-
-      labels = {
-        region  = "true"
-      }
     }
   }
 
   self_managed_node_groups = {
     local-ng = {
+      launch_template_os = "amazonlinux2eks"
       instance_type = "t3.medium"
       min_size      = 1
       subnet_ids    = [var.public_subnets_local_zone]
-      launch_template_os = "amazonlinux2eks"
+      
       
       block_device_mappings = {
         device_name = "/dev/xvda"
@@ -128,4 +109,18 @@ module "kubeip_role" {
       namespace_service_accounts = ["kube-system:${var.kubeip_sa_name}"]
     }
   }
+}
+
+resource "aws_security_group" "allow_edge_svc" {
+  name        = "allow_edge_svc"
+  description = "Allow TCP port 3000 for service exposed via nodeport"
+  vpc_id      = var.vpc_id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_tls_ipv4" {
+  security_group_id = aws_security_group.allow_edge_svc.id
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = 30000
+  ip_protocol       = "tcp"
+  to_port           = 30000
 }

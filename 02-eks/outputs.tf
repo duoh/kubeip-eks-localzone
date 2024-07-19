@@ -1,5 +1,5 @@
-output "eks_cluster_id" {
-  value = module.eks.cluster_id
+output "eks_cluster_name" {
+  value = module.eks.cluster_name
 }
 
 output "kubeip_role_arn" {

@@ -63,4 +63,3 @@ resource "aws_route_table_association" "private-subnet-lz-rta" {
   subnet_id      = aws_subnet.private-subnet-lz.id
   route_table_id = module.vpc.private_route_table_ids[0]
 }
-
