@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-a-deployment
+  labels:
+    app: app-a
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-a
+  template:
+    metadata:
+      labels:
+        app: app-a
+    spec:
+      containers:
+      - name: app-a
+        image: hashicorp/http-echo
+        ports:
+        - containerPort: 5678
+        args: ["-text=<h1>I'm SERVICE <em>A</em></h1>"]
+      nodeSelector:
+        region: "true"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-a-service
+spec:
+  type: ClusterIP
+  selector:
+    app: app-a
+  ports:
+    - protocol: TCP
+      port: 5678
+      targetPort: 5678
