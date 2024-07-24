@@ -41,7 +41,7 @@ metadata:
   name: nginx-indexfile-configmap
 data:
   index.html: |
-    <h1>I am Edge Service</h1>
+    <h1>I am EDGE SERVICE</h1>
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -80,7 +80,7 @@ metadata:
 spec:
   type: NodePort
   selector:
-    app: nginx
+    app: edge
   ports:
     - protocol: TCP
       port: 80

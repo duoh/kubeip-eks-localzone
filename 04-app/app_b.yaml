@@ -19,7 +19,7 @@ spec:
         image: hashicorp/http-echo
         ports:
         - containerPort: 5678
-        args: ["-text=<h1>I'm SERVICE <em>B</em></h1>"]
+        args: ["-text=<h1>I'm APP <em>B</em></h1>"]
       nodeSelector:
         region: "true"
 ---
