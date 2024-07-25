@@ -1,11 +1,11 @@
 region                     = "ap-southeast-1"
-vpc_id                     = "vpc-0b0a5c3aa391f86f4"
+vpc_id                     = "vpc-0fc56b98e932be8da"
 private_subnets            = [
-  "subnet-049be47d046a9bdd5",
-  "subnet-0709ff551579e328c",
-  "subnet-0df735d7861108477",
+  "subnet-0a10595c6291363fe",
+  "subnet-0d57126f680353dbb",
+  "subnet-098673b4041795af0",
                              ]
-public_subnets_local_zone  = "subnet-06e1d81143fc8e040"
-cluster_name               = "kubeip-lz-cluster"
+public_subnets_local_zone  = "subnet-0ab7b9bc4abf87c29"
+cluster_name               = "kubeip-eks-lz-cluster"
 kubeip_role_name           = "kubeip-agent-role"
 kubeip_sa_name             = "kubeip-agent-sa"
